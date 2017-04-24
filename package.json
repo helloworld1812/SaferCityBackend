@@ -1,0 +1,11 @@
+{
+  "name": "safer-city-backend",
+  "version": "1.0.0",
+  "description": "Backend for SaferCity: mobile app that allows user to post and read geolocated events",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
