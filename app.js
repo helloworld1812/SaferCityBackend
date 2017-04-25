@@ -1,6 +1,6 @@
 const http = require('http');
 
-http.createServer((req, res) => {
+const app = http.createServer((req, res) => {
   if (req.url === '/api/events') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     const event = {
@@ -12,3 +12,5 @@ http.createServer((req, res) => {
     res.end();
   }
 }).listen(8080, '127.0.0.1');
+
+export default app;

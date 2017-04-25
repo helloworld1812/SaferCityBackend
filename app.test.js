@@ -1,22 +1,26 @@
+/* global test, expect, afterAll */
+import app from './app';
+
 const http = require('http');
-require('./app.js');
 
 const APP_URL = 'http://127.0.0.1:8080';
 
-http.get(`${APP_URL}/api/events`, (res) => {
-  res.on('data', (event) => {
-    if (JSON.parse(event).title === 'Free wine!') {
-      console.log('PASS');
-    } else {
-      console.log('FAIL');
-    }
+afterAll(() => {
+  app.close();
+});
+
+test('/api/events returns an event', (done) => {
+  http.get(`${APP_URL}/api/events`, (res) => {
+    res.on('data', (event) => {
+      expect(JSON.parse(event).title).toBe('Free wine!');
+      done();
+    });
   });
 });
 
-http.get(APP_URL, (res) => {
-  if (res.statusCode === 404) {
-    console.log('PASS');
-  } else {
-    console.log('FAIL');
-  }
+test('/ returns 404', (done) => {
+  http.get(APP_URL, (res) => {
+    expect(res.statusCode).toBe(404);
+    done();
+  });
 });
