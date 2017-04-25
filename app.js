@@ -1,10 +1,10 @@
-var http = require('http');
+const http = require('http');
 
-http.createServer(function(req, res) {
+http.createServer((req, res) => {
 
   if (req.url === '/api/events') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    var event = {
+    const event = {
       title: 'Free wine!'
     };
     res.end(JSON.stringify(event));
