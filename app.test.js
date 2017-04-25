@@ -1,6 +1,6 @@
 /* global test, expect, afterAll */
-import app from './app';
-
+// Load and run the app
+const app = require('./app');
 const http = require('http');
 
 const APP_URL = 'http://127.0.0.1:8080';

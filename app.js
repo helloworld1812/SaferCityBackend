@@ -13,4 +13,4 @@ const app = http.createServer((req, res) => {
   }
 }).listen(8080, '127.0.0.1');
 
-export default app;
+module.exports = app;
