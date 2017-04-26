@@ -1,16 +1,14 @@
-const http = require('http');
+const express = require('express');
 
-const app = http.createServer((req, res) => {
-  if (req.url === '/api/events') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    const event = {
-      title: 'Free wine!',
-    };
-    res.end(JSON.stringify(event));
-  } else {
-    res.writeHead(404);
-    res.end();
-  }
-}).listen(8080, '127.0.0.1');
+const app = express();
 
-module.exports = app;
+app.get('/api/events', (req, res) => {
+  const event = {
+    title: 'Free wine!',
+  };
+  res.json(event);
+});
+
+const server = app.listen(8080);
+
+module.exports = server;
