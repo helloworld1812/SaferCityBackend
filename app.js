@@ -1,13 +1,9 @@
 const express = require('express');
+const eventsRoutes = require('./events/routes');
 
 const app = express();
 
-app.get('/api/events', (req, res) => {
-  const event = {
-    title: 'Free wine!',
-  };
-  res.json(event);
-});
+app.use('/events', eventsRoutes);
 
 const server = app.listen(8080);
 
