@@ -4,6 +4,7 @@
   "description": "Backend for SaferCity: mobile app that allows user to post and read geolocated events",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "jest"
   },
   "author": "",
@@ -19,9 +20,10 @@
     "eslint-plugin-react": "^6.10.3",
     "jest": "^19.0.2",
     "regenerator-runtime": "^0.10.3",
-    "request": "^2.81.0"
+    "superagent": "^3.5.2"
   },
   "dependencies": {
+    "body-parser": "^1.17.1",
     "express": "^4.15.2"
   }
 }
