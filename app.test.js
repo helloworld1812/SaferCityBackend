@@ -1,9 +1,18 @@
-/* global test, expect, afterAll */
-// Load and run the app
-const runningApp = require('./app');
+/* global test, expect, beforeAll, afterAll, jest */
 const request = require('superagent');
 
+// Don't connect to real DB
+jest.mock('./mongo');
+
+// Load and run the app
+const serverPromise = require('./app');
+
 const APP_URL = 'http://127.0.0.1:8080';
+let runningApp = null;
+
+beforeAll(() => {
+  return serverPromise.then((app) => { runningApp = app; });
+});
 
 afterAll(() => {
   runningApp.close();
