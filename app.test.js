@@ -10,9 +10,7 @@ const serverPromise = require('./app');
 const APP_URL = 'http://127.0.0.1:8080';
 let runningApp = null;
 
-beforeAll(() => {
-  return serverPromise.then((app) => { runningApp = app; });
-});
+beforeAll(() => serverPromise.then((app) => { runningApp = app; }));
 
 afterAll(() => {
   runningApp.close();
