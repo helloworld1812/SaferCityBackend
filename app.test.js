@@ -1,8 +1,6 @@
 /* global test, expect, beforeAll, afterAll, jest */
 const request = require('superagent');
-
-// Don't connect to real DB
-jest.mock('./mongo');
+const mongoose = require('mongoose');
 
 // Load and run the app
 const serverPromise = require('./app');
@@ -10,9 +8,13 @@ const serverPromise = require('./app');
 const APP_URL = 'http://127.0.0.1:8080';
 let runningApp = null;
 
-beforeAll(() => serverPromise.then((app) => { runningApp = app; }));
+beforeAll(() => {
+  mongoose.connection.dropDatabase();
+  return serverPromise.then((app) => { runningApp = app; });
+});
 
 afterAll(() => {
+  mongoose.disconnect();
   runningApp.close();
 });
 
@@ -20,8 +22,7 @@ afterAll(() => {
 
 const event1 = { title: 'Event 1' };
 const event2 = { title: 'Event 2' };
-const id1 = 1;
-const id2 = 2;
+let id1;
 
 test('/events POST returns id of newly created item', () => (
   // code below returns promise
@@ -29,7 +30,8 @@ test('/events POST returns id of newly created item', () => (
     .set('Content-Type', 'application/json')
     .send(event1)
     .then((resp) => {
-      expect(resp.body).toEqual(id1);
+      expect(resp.body).toBeDefined();
+      id1 = resp.body;
     })
 ));
 
@@ -39,7 +41,7 @@ test('/events POST returns id of newly created item (one more time)', () => (
     .set('Content-Type', 'application/json')
     .send(event2)
     .then((resp) => {
-      expect(resp.body).toEqual(id2);
+      expect(resp.body).toBeDefined();
     })
 ));
 
@@ -47,10 +49,12 @@ test('/events GET returns 2 items', () => (
   // code below returns promise
   request.get(`${APP_URL}/events`)
     .then((resp) => {
-      const events = resp.body;
-      expect(events.length).toEqual(2);
-      expect(events[0]).toEqual(event1);
-      expect(events[1]).toEqual(event2);
+      const receivedEvents = resp.body;
+      expect(receivedEvents.length).toEqual(2);
+      const receivedEvent1 = receivedEvents[0];
+      expect(receivedEvent1.title).toEqual(event1.title);
+      const receivedEvent2 = receivedEvents[1];
+      expect(receivedEvent2.title).toEqual(event2.title);
     })
 ));
 
@@ -58,8 +62,8 @@ test('/events/:id GET returns event for existing id', () => (
   // code below returns promise
   request.get(`${APP_URL}/events/${id1}`)
     .then((res) => {
-      const event = res.body;
-      expect(event).toEqual(event1);
+      const receivedEvent = res.body;
+      expect(receivedEvent.title).toEqual(event1.title);
     })
 ));
 
@@ -83,8 +87,8 @@ test('/events/:id PUT updates existing id', () => {
     ))
     .then((res) => {
       // ... and then check that it's indeed equal to an updated event
-      const event = res.body;
-      expect(event).toEqual(event1);
+      const receivedEvent = res.body;
+      expect(receivedEvent.title).toEqual(event1.title);
     });
 });
 
@@ -98,7 +102,7 @@ test('/events/:id PUT returns 404 error for non-existing id', () => (
     })
 ));
 
-test('/events/1 delete returns 500', () => (
+test('/events/:id DELETE removes the entity with existing id', () => (
   request.delete(`${APP_URL}/events/${id1}`)
     .then(() => (
       // When we've removed the event we would like to check that it's indeed removed
@@ -108,5 +112,17 @@ test('/events/1 delete returns 500', () => (
     .then((resp) => {
       const events = resp.body;
       expect(events.length).toEqual(1);
+    })
+));
+
+test('/events/:id DELETE return 404 error for non-existing id', () => (
+  request.delete(`${APP_URL}/events/-1`)
+    .then(() => (
+      // When we've removed the event we would like to check that it's indeed removed
+      // So we issue a request to fetch list of events...
+      request.get(`${APP_URL}/events`)
+    ))
+    .catch((res) => {
+      expect(res.status).toBe(404);
     })
 ));

@@ -8,44 +8,33 @@ router.use(bodyParser.urlencoded({ extended: true }));
 
 router.post('/', (req, res) => {
   const event = req.body;
-  const id = service.create(event);
-  res.json(id);
+  service.create(event).then((createdEvent) => { res.json(createdEvent.id); });
 });
 
 router.get('/', (req, res) => {
-  const events = service.list();
-  res.json(events);
+  service.list().then((events) => { res.json(events); });
 });
 
 router.get('/:id', (req, res) => {
   const id = req.params.id;
-  try {
-    const event = service.find(id);
-    res.json(event);
-  } catch (e) {
-    res.status(404).send(`No event with id "${id}" exists`);
-  }
+  service.find(id)
+    .then((event) => { res.json(event); })
+    .catch(() => { res.status(404).send(`No event with id "${id}" exists`); });
 });
 
 router.put('/:id', (req, res) => {
   const id = req.params.id;
-  try {
-    const event = req.body;
-    service.update(id, event);
-    res.send();
-  } catch (e) {
-    res.status(404).send(`No event with id "${id}" exists`);
-  }
+  const event = req.body;
+  service.update(id, event)
+    .then(() => { res.send(); })
+    .catch(() => { res.status(404).send(`No event with id "${id}" exists`); });
 });
 
 router.delete('/:id', (req, res) => {
   const id = req.params.id;
-  try {
-    service.remove(id);
-    res.send();
-  } catch (e) {
-    res.status(404).send(`No event with id "${id}" exists`);
-  }
+  service.remove(id)
+    .then(() => { res.send(); })
+    .catch(() => { res.status(404).send(`No event with id "${id}" exists`); });
 });
 
 module.exports = router;
