@@ -7,34 +7,34 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
 router.post('/', (req, res) => {
-  const event = req.body;
-  service.create(event).then((createdEvent) => { res.json(createdEvent.id); });
+  const report = req.body;
+  service.create(report).then((createdReport) => { res.json(createdReport.id); });
 });
 
 router.get('/', (req, res) => {
-  service.list().then((events) => { res.json(events); });
+  service.list().then((reports) => { res.json(reports); });
 });
 
 router.get('/:id', (req, res) => {
   const id = req.params.id;
   service.find(id)
-    .then((event) => { res.json(event); })
-    .catch(() => { res.status(404).send(`No event with id "${id}" exists`); });
+    .then((report) => { res.json(report); })
+    .catch(() => { res.status(404).send(`No report with id "${id}" exists`); });
 });
 
 router.put('/:id', (req, res) => {
   const id = req.params.id;
-  const event = req.body;
-  service.update(id, event)
+  const report = req.body;
+  service.update(id, report)
     .then(() => { res.send(); })
-    .catch(() => { res.status(404).send(`No event with id "${id}" exists`); });
+    .catch(() => { res.status(404).send(`No report with id "${id}" exists`); });
 });
 
 router.delete('/:id', (req, res) => {
   const id = req.params.id;
   service.remove(id)
     .then(() => { res.send(); })
-    .catch(() => { res.status(404).send(`No event with id "${id}" exists`); });
+    .catch(() => { res.status(404).send(`No report with id "${id}" exists`); });
 });
 
 module.exports = router;

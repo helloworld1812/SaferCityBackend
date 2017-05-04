@@ -1,10 +1,10 @@
 const express = require('express');
-const eventsRoutes = require('./events/routes');
+const reportsRoutes = require('./reports/routes');
 const mongo = require('./mongo');
 
 const app = express();
 
-app.use('/events', eventsRoutes);
+app.use('/reports', reportsRoutes);
 
 const serverPromise = Promise.all([mongo.connect()])
   .then(() => (Promise.resolve(app.listen(8080))))
