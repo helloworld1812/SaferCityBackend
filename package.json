@@ -2,9 +2,9 @@
   "name": "safer-city-backend",
   "version": "1.0.0",
   "description": "Backend for SaferCity: mobile app that allows user to post and read geolocated events",
-  "main": "app.js",
+  "main": "app/app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "node app/app.js",
     "test": "jest"
   },
   "author": "",
