@@ -1,12 +1,12 @@
 FROM node:boron
 
-# Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-
 # Use admin user
 RUN useradd -ms /bin/bash/ admin
 USER admin
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
 
 COPY app /usr/src/app
 
