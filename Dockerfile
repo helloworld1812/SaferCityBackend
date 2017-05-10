@@ -4,11 +4,9 @@ FROM node:boron
 RUN useradd -ms /bin/bash/ admin
 USER admin
 
-# Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-
-COPY app /usr/src/app
+# Copy app source code
+COPY app /app
+WORKDIR /app
 
 # Install app dependencies
 RUN npm install
