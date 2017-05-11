@@ -23,3 +23,9 @@ deployment:
       - docker tag safercitybackend_safercity-backend $DOCKER_HUB_USER_ID/safercity-backend:latest
       - docker push $DOCKER_HUB_USER_ID/safercity-backend:$CIRCLE_SHA1
       - docker push $DOCKER_HUB_USER_ID/safercity-backend:latest
+  staging:
+    branch: [master]
+    commands:
+      - docker-machine create --driver digitalocean --digitalocean-access-token $DIGITAL_OCEAN_TOKEN safercity-backend-machine
+      - docker-machine env safercity-backend-machine
+      - docker-compose -f docker-compose.prod.yml up -d
