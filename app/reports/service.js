@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const reportSchema = mongoose.Schema({
   title: String,
+  location: String,
+  time: Date,
+  details: String,
+  dangerous: Boolean,
 });
 
 const Report = mongoose.model('Report', reportSchema);

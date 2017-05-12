@@ -20,8 +20,19 @@ afterAll(() => {
 
 // Please note: test order matters
 
-const report1 = { title: 'Report 1' };
-const report2 = { title: 'Report 2' };
+const report1 = {
+  title: 'Ivan departure party',
+  location: 'Santana Row',
+  time: new Date(2017, 5, 11, 20, 0, 0, 0),
+  details: 'Bar surfing',
+};
+const report2 = {
+  title: 'Car accident',
+  location: '101',
+  time: new Date(2017, 3, 15, 11, 15, 0, 0),
+  details: 'Two cars',
+  dangerous: true,
+};
 let id1;
 
 test('/reports POST returns id of newly created item', () => (
@@ -53,8 +64,10 @@ test('/reports GET returns 2 items', () => (
       expect(receivedReports.length).toEqual(2);
       const receivedReport1 = receivedReports[0];
       expect(receivedReport1.title).toEqual(report1.title);
+      expect(new Date(receivedReport1.time)).toEqual(report1.time);
       const receivedReport2 = receivedReports[1];
       expect(receivedReport2.title).toEqual(report2.title);
+      expect(receivedReport2.dangerous).toEqual(report2.dangerous);
     })
 ));
 
@@ -76,7 +89,7 @@ test('/reports/:id GET returns 404 error for non-existing id', () => (
 ));
 
 test('/reports/:id PUT updates existing id', () => {
-  report1.title = 'Updated report';
+  report1.title = 'Party';
   return request.put(`${APP_URL}/reports/${id1}`)
     .set('Content-Type', 'application/json')
     .send(report1)
