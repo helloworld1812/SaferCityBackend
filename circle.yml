@@ -11,6 +11,8 @@ dependencies:
     - curl -L https://github.com/docker/machine/releases/download/v0.10.0/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine &&
         chmod +x /tmp/docker-machine &&
         sudo cp /tmp/docker-machine /usr/local/bin/docker-machine
+  cache_directories:
+    - "node_modules"
 
 test:
   override:
@@ -26,6 +28,5 @@ deployment:
       - docker tag safercitybackend_safercity-backend $DOCKER_HUB_USER_ID/safercity-backend:latest
       #- docker push $DOCKER_HUB_USER_ID/safercity-backend:$CIRCLE_SHA1
       - docker push $DOCKER_HUB_USER_ID/safercity-backend:latest
-      - docker-machine create --driver digitalocean --digitalocean-access-token $DIGITAL_OCEAN_TOKEN safercity-backend-machine
-      - docker-machine env safercity-backend-machine
-      - docker-compose -f docker-compose.prod.yml up -d
+      - echo 'Updating staging'
+      - ssh -v $DROPLET_USER@$DROPLET_IP "sh restart.sh"
