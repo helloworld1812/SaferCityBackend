@@ -26,18 +26,18 @@ afterAll(() => {
 const reports = [{
   title: 'Ivan departure party',
   location: 'Santana Row',
-  time: new Date(2017, 5, 11, 20, 0, 0, 0),
+  time: new Date(2017, 5, 11, 20, 0, 0, 0),  // make sure times are not sorted
   details: 'Bar surfing',
 }, {
   title: 'Car accident',
   location: '101',
-  time: new Date(2017, 3, 15, 11, 15, 0, 0),
+  time: new Date(2017, 3, 15, 11, 15, 0, 0),  // make sure times are not sorted
   details: 'Two cars',
   dangerous: true,
 }, {
   title: 'Festival happening',
   location: 'Shoreline Amphiteatre',
-  time: new Date(2017, 7, 15, 11, 15, 0, 0),
+  time: new Date(2017, 7, 15, 11, 15, 0, 0), // make sure times are not sorted
   details: 'Muse should be there',
 }];
 
@@ -63,7 +63,7 @@ test('/reports POST returns id of newly created item', () => (
 ));
 
 // ## Make sure we added them all and reading them
-test('/reports GET returns 3 items', () => (
+test('/reports GET returns items', () => (
   // code below returns promise
   request.get(`${APP_URL}/reports`)
     .then((resp) => {
@@ -78,6 +78,22 @@ test('/reports GET returns 3 items', () => (
         expect(new Date(receivedReport.time)).toEqual(report.time);
         expect(receivedReport.details).toEqual(report.details);
         expect(receivedReport.dangerous).toEqual(report.dangerous);
+      });
+    })
+));
+
+// ## Make sure list of reports is sorted by time with newest on top
+test('/reports GET returns items sorted by time DESC', () => (
+  // code below returns promise
+  request.get(`${APP_URL}/reports`)
+    .then((resp) => {
+      const receivedReports = resp.body;
+      expect(receivedReports.length).toEqual(reports.length);
+      let lastTime = Infinity;
+      receivedReports.forEach((receivedReport) => {
+        const reportTime = (new Date(receivedReport.time)).getTime();
+        expect(reportTime).toBeLessThan(lastTime);
+        lastTime = reportTime;
       });
     })
 ));

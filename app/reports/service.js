@@ -17,7 +17,7 @@ const Report = mongoose.model('Report', reportSchema);
 const create = report => (Report.create(report));
 
 /** Returns all entities in storage */
-const list = () => (Report.find().exec());
+const list = () => (Report.find().sort('-time').exec());
 
 /** Returns report by id */
 const find = id => (Report.findOne({ _id: id }));
