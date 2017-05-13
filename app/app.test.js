@@ -2,6 +2,8 @@
 const request = require('superagent');
 const mongoose = require('mongoose');
 
+// # Setup
+
 // Load and run the app
 const serverPromise = require('./app');
 
@@ -18,68 +20,79 @@ afterAll(() => {
   runningApp.close();
 });
 
-// Please note: test order matters
 
-const report1 = {
+// # Test data
+
+const reports = [{
   title: 'Ivan departure party',
   location: 'Santana Row',
   time: new Date(2017, 5, 11, 20, 0, 0, 0),
   details: 'Bar surfing',
-};
-const report2 = {
+}, {
   title: 'Car accident',
   location: '101',
   time: new Date(2017, 3, 15, 11, 15, 0, 0),
   details: 'Two cars',
   dangerous: true,
-};
-let id1;
+}, {
+  title: 'Festival happening',
+  location: 'Shoreline Amphiteatre',
+  time: new Date(2017, 7, 15, 11, 15, 0, 0),
+  details: 'Muse should be there',
+}];
 
+/** Utility function to return id of index-th report */
+const id = index => reports[index].id;
+
+
+// # Tests
+// Please note: test order matters
+
+// ## Put test data in database
 test('/reports POST returns id of newly created item', () => (
   // code below returns promise
-  request.post(`${APP_URL}/reports`)
-    .set('Content-Type', 'application/json')
-    .send(report1)
-    .then((resp) => {
-      expect(resp.body).toBeDefined();
-      id1 = resp.body;
-    })
+  Promise.all(Object.keys(reports).map(index => (
+    request.post(`${APP_URL}/reports`)
+      .set('Content-Type', 'application/json')
+      .send(reports[index])
+      .then((resp) => {
+        expect(resp.body).toBeDefined();
+        reports[index].id = resp.body;
+      })
+  )))
 ));
 
-test('/reports POST returns id of newly created item (one more time)', () => (
-  // code below returns promise
-  request.post(`${APP_URL}/reports`)
-    .set('Content-Type', 'application/json')
-    .send(report2)
-    .then((resp) => {
-      expect(resp.body).toBeDefined();
-    })
-));
-
-test('/reports GET returns 2 items', () => (
+// ## Make sure we added them all and reading them
+test('/reports GET returns 3 items', () => (
   // code below returns promise
   request.get(`${APP_URL}/reports`)
     .then((resp) => {
       const receivedReports = resp.body;
-      expect(receivedReports.length).toEqual(2);
-      const receivedReport1 = receivedReports[0];
-      expect(receivedReport1.title).toEqual(report1.title);
-      expect(new Date(receivedReport1.time)).toEqual(report1.time);
-      const receivedReport2 = receivedReports[1];
-      expect(receivedReport2.title).toEqual(report2.title);
-      expect(receivedReport2.dangerous).toEqual(report2.dangerous);
+      expect(receivedReports.length).toEqual(reports.length);
+      receivedReports.forEach((receivedReport) => {
+        const reportsWithSameTitle = reports.filter(r => r.title === receivedReport.title);
+        expect(reportsWithSameTitle.length).toBe(1);
+        const report = reportsWithSameTitle[0];
+        expect(receivedReport.title).toEqual(report.title);
+        expect(receivedReport.location).toEqual(report.location);
+        expect(new Date(receivedReport.time)).toEqual(report.time);
+        expect(receivedReport.details).toEqual(report.details);
+        expect(receivedReport.dangerous).toEqual(report.dangerous);
+      });
     })
 ));
 
+// ## Check if we can grab object by id
 test('/reports/:id GET returns report for existing id', () => (
   // code below returns promise
-  request.get(`${APP_URL}/reports/${id1}`)
+  request.get(`${APP_URL}/reports/${id(0)}`)
     .then((res) => {
       const receivedReport = res.body;
-      expect(receivedReport.title).toEqual(report1.title);
+      expect(receivedReport.title).toEqual(reports[0].title);
     })
 ));
 
+// ## But non-existing id returns 404
 test('/reports/:id GET returns 404 error for non-existing id', () => (
   // code below returns promise
   request.get(`${APP_URL}/reports/-1`)
@@ -88,46 +101,50 @@ test('/reports/:id GET returns 404 error for non-existing id', () => (
     })
 ));
 
+// ## Check if we can update object by id
 test('/reports/:id PUT updates existing id', () => {
-  report1.title = 'Party';
-  return request.put(`${APP_URL}/reports/${id1}`)
+  reports[0].title = 'Party';
+  return request.put(`${APP_URL}/reports/${id(0)}`)
     .set('Content-Type', 'application/json')
-    .send(report1)
+    .send(reports[0])
     .then(() => (
       // When we've updated we would like to check that report is indeed updated
       // So we issue a request to fetch just modified data...
-      request.get(`${APP_URL}/reports/${id1}`)
+      request.get(`${APP_URL}/reports/${id(0)}`)
     ))
     .then((res) => {
       // ... and then check that it's indeed equal to an updated report
       const receivedReport = res.body;
-      expect(receivedReport.title).toEqual(report1.title);
+      expect(receivedReport.title).toEqual(reports[0].title);
     });
 });
 
+// ## But update by non-existing id returns 404
 test('/reports/:id PUT returns 404 error for non-existing id', () => (
   // code below returns promise
   request.put(`${APP_URL}/reports/-1`)
     .set('Content-Type', 'application/json')
-    .send(report1)
+    .send(reports[0])
     .catch((res) => {
       expect(res.status).toBe(404);
     })
 ));
 
+// ## Check if we can remove object
 test('/reports/:id DELETE removes the entity with existing id', () => (
-  request.delete(`${APP_URL}/reports/${id1}`)
+  request.delete(`${APP_URL}/reports/${id(1)}`)
     .then(() => (
       // When we've removed the report we would like to check that it's indeed removed
       // So we issue a request to fetch list of reports...
       request.get(`${APP_URL}/reports`)
     ))
     .then((resp) => {
-      const reports = resp.body;
-      expect(reports.length).toEqual(1);
+      const updatedReports = resp.body;
+      expect(updatedReports.length).toEqual(reports.length - 1);
     })
 ));
 
+// ## But if we remove by non-existing id we get 404
 test('/reports/:id DELETE return 404 error for non-existing id', () => (
   request.delete(`${APP_URL}/reports/-1`)
     .then(() => (
