@@ -18,6 +18,9 @@ To start the app:
 npm start
 ```
 
+Note that this will launch ["nodemon"](https://github.com/remy/nodemon#nodemon)
+that will listen to any changes in source code and automatically restart the applicaiton.
+
 To test:
 
 ```bash
