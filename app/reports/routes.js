@@ -1,40 +1,16 @@
 const express = require('express');
 const service = require('./service');
 const bodyParser = require('body-parser');
-
-const REQUIRED_VALIDATION_ERROR_MESSAGE = 'Field is required but no value is provided';
+const validators = require('./validators');
 
 const router = express.Router();
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
-router.post('/', (req, res) => {
-  req.checkBody({
-    title: {
-      notEmpty: true,
-      errorMessage: REQUIRED_VALIDATION_ERROR_MESSAGE,
-    },
-    location: {
-      notEmpty: true,
-      errorMessage: REQUIRED_VALIDATION_ERROR_MESSAGE,
-    },
-    time: {
-      notEmpty: true,
-      errorMessage: REQUIRED_VALIDATION_ERROR_MESSAGE,
-      isDate: {
-        errorMessage: 'Provided time is not a valid time',
-      },
-    },
-  });
-  req.getValidationResult().then((result) => {
-    if (result.isEmpty()) {
-      const report = req.body;
-      service.create(report).then((createdReport) => {
-        res.json(createdReport.id);
-      });
-    } else {
-      res.status(422).json(result.array());
-    }
+router.post('/', validators.reportValidator, (req, res) => {
+  const report = req.body;
+  service.create(report).then((createdReport) => {
+    res.json(createdReport.id);
   });
 });
 
