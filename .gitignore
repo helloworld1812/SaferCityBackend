@@ -38,3 +38,4 @@ jspm_packages
 terraform.tfstate
 terraform.tfstate.backup
 /info
+/.env

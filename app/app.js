@@ -1,7 +1,9 @@
 const express = require('express');
 const reportsRoutes = require('./reports/routes');
 const mongo = require('./mongo');
-const expressValidator = require('express-validator')
+const expressValidator = require('express-validator');
+
+require('dotenv').config();
 
 const app = express();
 
