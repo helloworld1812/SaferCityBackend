@@ -15,7 +15,7 @@ npm install
 To start the app:
 
 ```bash
-npm start
+npm run dev
 ```
 
 Note that this will launch ["nodemon"](https://github.com/remy/nodemon#nodemon)

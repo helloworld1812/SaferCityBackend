@@ -4,7 +4,8 @@
   "description": "Backend for SaferCity: mobile app that allows user to post and read geolocated events",
   "main": "app/app.js",
   "scripts": {
-    "start": "nodemon app/app.js",
+    "start": "node app/app.js",
+    "dev": "nodemon app/app.js",
     "test": "jest"
   },
   "author": "",
