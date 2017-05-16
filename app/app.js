@@ -3,7 +3,7 @@ const reportsRoutes = require('./reports/routes');
 const mongo = require('./mongo');
 const expressValidator = require('express-validator');
 
-console.log(require('dotenv').config());
+require('dotenv').config();
 
 const app = express();
 
