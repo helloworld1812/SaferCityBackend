@@ -19,11 +19,11 @@ const create = comment => (Comment.create(comment));
 const list = searchParams => (Comment.find(searchParams).sort('-time').exec());
 
 
-/** Replaces report by id with given new report */
+/** Replaces comment by id with given new one */
 const update = (id, newComment) => (Comment.findOneAndUpdate(
   { _id: id }, newComment).exec());
 
-/** Removes report by id */
+/** Removes comment by id */
 const remove = id => (Comment.findOneAndRemove({ _id: id }).exec());
 
 module.exports = {

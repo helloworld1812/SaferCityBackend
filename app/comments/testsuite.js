@@ -1,5 +1,5 @@
 /**
- * Integration test suite for reports entity.
+ * Integration test suite for comments entity.
  * Intended to be required from app.test.js.
  */
 
@@ -100,12 +100,12 @@ test('/comments/:id PUT updates existing id', () => {
     .set('Content-Type', 'application/json')
     .send(comments[0])
     .then(() => (
-      // When we've updated we would like to check that report is indeed updated
+      // When we've updated we would like to check that item is indeed updated
       // So we issue a request to fetch just modified data...
       request.get(`${APP_URL}/comments?reportId=${reportId(0)}`)
     ))
     .then((res) => {
-      // ... and then check that it's indeed equal to an updated report
+      // ... and then check that it's indeed equal to an updated item
       const receivedComments = res.body;
       const receivedCommentsWithSameId = receivedComments.filter(c => c._id === String(id(0)));  // eslint-disable-line
       expect(receivedCommentsWithSameId.length).toBe(1);
@@ -128,7 +128,7 @@ test('/comments/:id PUT returns 404 error for non-existing id', () => (
 test('/comments/:id DELETE removes the entity with existing id', () => (
   request.delete(`${APP_URL}/comments/${id(0)}`)
     .then(() => (
-      // When we've removed the report we would like to check that it's indeed removed
+      // When we've removed the item we would like to check that it's indeed removed
       // So we issue a request to fetch list of comments...
       request.get(`${APP_URL}/comments?reportId=${reportId(0)}`)
     ))
