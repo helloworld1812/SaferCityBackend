@@ -28,8 +28,10 @@ const reports = [{
   details: 'Muse should be there',
 }];
 
-/** Utility function to return id of index-th report */
+/** Utility function to return id of index-th item */
 const id = index => reports[index].id;
+/** Utility function to return item with given id */
+const reportById = itemId => reports.filter(r => String(r.id) === itemId)[0];
 
 
 // # Tests
@@ -103,7 +105,7 @@ test('/reports POST returns error for report with not valid time', () => (
     })
 ));
 
-// ## Make sure we added them all and reading them
+// ## Make sure we added them and are able to read them
 test('/reports GET returns items', () => (
   // code below returns promise
   request.get(`${APP_URL}/reports`)
@@ -111,9 +113,8 @@ test('/reports GET returns items', () => (
       const receivedReports = resp.body;
       expect(receivedReports.length).toEqual(reports.length);
       receivedReports.forEach((receivedReport) => {
-        const reportsWithSameTitle = reports.filter(r => r.title === receivedReport.title);
-        expect(reportsWithSameTitle.length).toBe(1);
-        const report = reportsWithSameTitle[0];
+        const report = reportById(receivedReport._id); // eslint-disable-line
+        expect(report).toBeDefined();
         expect(receivedReport.title).toEqual(report.title);
         expect(receivedReport.location).toEqual(report.location);
         expect(new Date(receivedReport.time)).toEqual(report.time);
@@ -129,7 +130,6 @@ test('/reports GET returns items sorted by time DESC', () => (
   request.get(`${APP_URL}/reports`)
     .then((resp) => {
       const receivedReports = resp.body;
-      expect(receivedReports.length).toEqual(reports.length);
       let lastTime = Infinity;
       receivedReports.forEach((receivedReport) => {
         const reportTime = (new Date(receivedReport.time)).getTime();
@@ -204,11 +204,6 @@ test('/reports/:id DELETE removes the entity with existing id', () => (
 // ## But if we remove by non-existing id we get 404
 test('/reports/:id DELETE return 404 error for non-existing id', () => (
   request.delete(`${APP_URL}/reports/-1`)
-    .then(() => (
-      // When we've removed the report we would like to check that it's indeed removed
-      // So we issue a request to fetch list of reports...
-      request.get(`${APP_URL}/reports`)
-    ))
     .catch((res) => {
       expect(res.status).toBe(404);
     })
