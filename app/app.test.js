@@ -34,5 +34,9 @@ describe('Configuration', () => {
 // So you can read each "require" as "execute tests in specified file"
 
 describe('"Reports" entity', () => {
-  require('./reports/testsuite.js'); // eslint-disable-line global-require
+  require('./reports/testsuite'); // eslint-disable-line global-require
+});
+
+describe('"Comments" entity', () => {
+  require('./comments/testsuite'); // eslint-disable-line global-require
 });
