@@ -1,12 +1,13 @@
 const express = require('express');
 const service = require('./service');
 const bodyParser = require('body-parser');
+const validators = require('./validators');
 
 const router = express.Router();
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
-router.post('/', (req, res) => {
+router.post('/', validators.commentValidator, (req, res) => {
   const comment = req.body;
   service.create(comment).then((createdComment) => {
     res.json(createdComment.id);
@@ -24,7 +25,7 @@ router.get('/', (req, res) => {
   }
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validators.commentValidator, (req, res) => {
   const id = req.params.id;
   const comment = req.body;
   service.update(id, comment)
