@@ -27,11 +27,11 @@ test('/reports POST returns error for report with no title', () => (
 
       const errors = JSON.parse(resp.response.text);
 
-      const titleErrors = getErrorsForField(errors, 'title');
-      expect(titleErrors.length).toBeGreaterThan(0); // At least 1 error message
+      const fieldErrors = getErrorsForField(errors, 'title');
+      expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
 
-      const titleErrorsAboutRequired = getErrorsContainingText(titleErrors, 'required');
-      expect(titleErrorsAboutRequired.length).toBe(1);
+      const fieldErrorsWithText = getErrorsContainingText(fieldErrors, 'required');
+      expect(fieldErrorsWithText).toHaveLength(1);
     })
 ));
 
@@ -49,11 +49,11 @@ test('/reports POST returns error for report with no location', () => (
 
       const errors = JSON.parse(resp.response.text);
 
-      const locationErrors = getErrorsForField(errors, 'location');
-      expect(locationErrors.length).toBeGreaterThan(0); // At least 1 error message
+      const fieldErrors = getErrorsForField(errors, 'location');
+      expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
 
-      const locationErrorsAboutRequired = getErrorsContainingText(locationErrors, 'required');
-      expect(locationErrorsAboutRequired.length).toBe(1);
+      const fieldErrorsWithText = getErrorsContainingText(fieldErrors, 'required');
+      expect(fieldErrorsWithText).toHaveLength(1);
     })
 ));
 
@@ -71,11 +71,11 @@ test('/reports POST returns error for report with no time', () => (
 
       const errors = JSON.parse(resp.response.text);
 
-      const timeErrors = getErrorsForField(errors, 'time');
-      expect(timeErrors.length).toBeGreaterThan(0); // At least 1 error message
+      const fieldErrors = getErrorsForField(errors, 'time');
+      expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
 
-      const timeErrorsAboutRequired = getErrorsContainingText(timeErrors, 'required');
-      expect(timeErrorsAboutRequired.length).toBe(1);
+      const fieldErrorsWithText = getErrorsContainingText(fieldErrors, 'required');
+      expect(fieldErrorsWithText).toHaveLength(1);
     })
 ));
 
@@ -94,10 +94,10 @@ test('/reports POST returns error for report with not valid time', () => (
 
       const errors = JSON.parse(resp.response.text);
 
-      const timeErrors = getErrorsForField(errors, 'time');
-      expect(timeErrors.length).toBeGreaterThan(0); // At least 1 error message
+      const fieldErrors = getErrorsForField(errors, 'time');
+      expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
 
-      const timeErrorsAboutValid = getErrorsContainingText(timeErrors, 'valid');
-      expect(timeErrorsAboutValid.length).toBe(1);
+      const fieldErrorsWithText = getErrorsContainingText(fieldErrors, 'valid');
+      expect(fieldErrorsWithText).toHaveLength(1);
     })
 ));
