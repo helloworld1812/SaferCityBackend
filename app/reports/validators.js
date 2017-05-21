@@ -18,4 +18,16 @@ const reportValidator = (req, res, next) => {
   });
 };
 
-module.exports = { reportValidator };
+const listReportsValidator = (req, res, next) => {
+  req.checkQuery('before', '"before" is not a valid timestamp').optional().isInt();
+
+  req.getValidationResult().then((result) => {
+    if (result.isEmpty()) {
+      next();
+    } else {
+      res.status(422).json(result.array());
+    }
+  });
+}
+
+module.exports = { reportValidator, listReportsValidator };

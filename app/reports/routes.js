@@ -7,6 +7,14 @@ const router = express.Router();
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
+/** Utility function that returns date for provided timestamp or now if it's undefined */
+const getDateOrNow = (timestamp) => {
+  if (timestamp) {
+    return new Date(parseInt(timestamp, 10));
+  }
+  return Date.now();
+};
+
 router.post('/', validators.reportValidator, (req, res) => {
   const report = req.body;
   service.create(report).then((createdReport) => {
@@ -14,8 +22,9 @@ router.post('/', validators.reportValidator, (req, res) => {
   });
 });
 
-router.get('/', (req, res) => {
-  service.list().then((reports) => { res.json(reports); });
+router.get('/', validators.listReportsValidator, (req, res) => {
+  const before = getDateOrNow(req.query.before);
+  service.list(before).then((reports) => { res.json(reports); });
 });
 
 router.get('/:id', (req, res) => {

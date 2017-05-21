@@ -10,14 +10,17 @@ const reportSchema = mongoose.Schema({
 
 const Report = mongoose.model('Report', reportSchema);
 
+const LIST_LIMIT = 10;
+
 /**
  * Adds report to storage
  * @returns newly created report
  */
 const create = report => (Report.create(report));
 
-/** Returns all entities in storage */
-const list = () => (Report.find().sort('-time').exec());
+/** Returns LIST_LIMIT entities in storage with time before specified one */
+const list = before => (
+  Report.find({ time: { $lt: before } }).limit(LIST_LIMIT).sort('-time').exec());
 
 /** Returns report by id */
 const find = id => (Report.findOne({ _id: id }));

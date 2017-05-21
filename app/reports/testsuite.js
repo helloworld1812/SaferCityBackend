@@ -13,23 +13,25 @@ const APP_URL = global.appUrl;
 const reports = [{
   title: 'Ivan departure party',
   location: 'Santana Row',
-  time: new Date(2017, 5, 11, 20, 0, 0, 0),  // make sure times are not sorted
+  time: new Date(2017, 2, 11, 20, 0, 0, 0),  // make sure times are not sorted
   details: 'Bar surfing',
 }, {
   title: 'Car accident',
   location: '101',
-  time: new Date(2017, 3, 15, 11, 15, 0, 0),  // make sure times are not sorted
+  time: new Date(2017, 0, 15, 11, 15, 0, 0),  // make sure times are not sorted
   details: 'Two cars',
   dangerous: true,
 }, {
   title: 'Festival happening',
   location: 'Shoreline Amphiteatre',
-  time: new Date(2017, 7, 15, 11, 15, 0, 0), // make sure times are not sorted
+  time: new Date(2017, 4, 15, 11, 15, 0, 0), // make sure times are not sorted
   details: 'Muse should be there',
 }];
 
 /** Utility function to return id of index-th item */
 const id = index => reports[index].id;
+/** Utility function to return time of index-th item */
+const time = index => reports[index].time;
 /** Utility function to return item with given id */
 const reportById = itemId => reports.filter(r => String(r.id) === itemId)[0];
 
@@ -87,6 +89,19 @@ test('/reports GET returns items sorted by time DESC', () => (
         const reportTime = (new Date(receivedReport.time)).getTime();
         expect(reportTime).toBeLessThan(lastTime);
         lastTime = reportTime;
+      });
+    })
+));
+
+// ## Make sure before param works as expected
+test('/reports?before={time} GET returns items happened before specified time', () => (
+  // code below returns promise
+  request.get(`${APP_URL}/reports?before=${time(2).getTime()}`)
+    .then((resp) => {
+      const receivedReports = resp.body;
+      receivedReports.forEach((receivedReport) => {
+        const reportTime = (new Date(receivedReport.time)).getTime();
+        expect(reportTime).toBeLessThan(time(2).getTime());
       });
     })
 ));
