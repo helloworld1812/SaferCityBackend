@@ -66,9 +66,10 @@ test('/reports GET returns items', () => (
       receivedReports.forEach((receivedReport) => {
         const report = reportById(receivedReport._id); // eslint-disable-line
         expect(report).toBeDefined();
+        // Check all properties
         expect(receivedReport.title).toEqual(report.title);
         expect(receivedReport.location).toEqual(report.location);
-        expect(new Date(receivedReport.time)).toEqual(report.time);
+        expect(receivedReport.time).toEqual(report.time.toISOString());
         expect(receivedReport.details).toEqual(report.details);
         expect(receivedReport.dangerous).toEqual(report.dangerous);
       });
