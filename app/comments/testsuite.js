@@ -61,6 +61,11 @@ test('/comments POST returns id of newly created item', () => (
   )))
 ));
 
+// ## Make sure error is returned for invalid comments
+describe('"Comments" validators', () => {
+  require('./validators.testsuite'); // eslint-disable-line global-require
+});
+
 // ## Make sure we added them and are able to read them
 test('/comments?reportId=:reportId GET returns items', () => (
   // code below returns promise
