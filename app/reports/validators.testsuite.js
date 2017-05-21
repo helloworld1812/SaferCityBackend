@@ -171,3 +171,23 @@ test('/reports POST returns error for report with too long (>255) description', 
       expect(getErrorsContainingText(fieldErrors, '255')).toHaveLength(1);
     })
 ));
+
+// Same validator is used to validate PUT requests.
+test('/reports PUT also has validation', () => (
+  // code below returns promise
+  // Fetch list of reports
+  request.get(`${APP_URL}/reports`)
+    .then(resp => (
+      // Fetch first report in the list
+      request.get(`${APP_URL}/reports/${resp.body[0]._id}`) // eslint-disable-line
+    ))
+    .then(resp2 => (
+      // Set update request with obviously invalid value
+      request.put(`${APP_URL}/reports/${resp2.body._id}`) // eslint-disable-line
+        .set('Content-Type', 'application/json')
+        .send({})
+    ))
+    .catch((resp3) => {
+      expect(resp3.status).toBe(422);
+    })
+));

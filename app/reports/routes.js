@@ -25,7 +25,7 @@ router.get('/:id', (req, res) => {
     .catch(() => { res.status(404).send(`No report with id "${id}" exists`); });
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validators.reportValidator, (req, res) => {
   const id = req.params.id;
   const report = req.body;
   service.update(id, report)
