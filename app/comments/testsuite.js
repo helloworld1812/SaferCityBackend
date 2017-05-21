@@ -3,7 +3,7 @@
  * Intended to be required from app.test.js.
  */
 
-/* global test, expect, beforeAll, afterAll, jest */
+/* global describe, test, expect */
 const request = require('superagent');
 const mongoose = require('mongoose');
 
@@ -119,6 +119,7 @@ test('/comments/:id PUT returns 404 error for non-existing id', () => (
   request.put(`${APP_URL}/comments/-1`)
     .set('Content-Type', 'application/json')
     .send(comments[0])
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((res) => {
       expect(res.status).toBe(404);
     })
@@ -141,6 +142,7 @@ test('/comments/:id DELETE removes the entity with existing id', () => (
 // ## But if we remove by non-existing id we get 404
 test('/comments/:id DELETE return 404 error for non-existing id', () => (
   request.delete(`${APP_URL}/comments/-1`)
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((res) => {
       expect(res.status).toBe(404);
     })

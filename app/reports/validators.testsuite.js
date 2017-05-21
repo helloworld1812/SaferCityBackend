@@ -22,6 +22,7 @@ test('/reports POST returns error for report with no title', () => (
       time: new Date(2017, 5, 11, 20, 0, 0, 0),
       details: 'Bar surfing',
     })
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((resp) => {
       expect(resp.status).toBe(422);
 
@@ -45,6 +46,7 @@ test('/reports POST returns error for report with too long (>80) title', () => (
       time: new Date(2017, 5, 11, 20, 0, 0, 0),
       details: 'Bar surfing',
     })
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((resp) => {
       expect(resp.status).toBe(422);
 
@@ -67,6 +69,7 @@ test('/reports POST returns error for report with no location', () => (
       time: new Date(2017, 5, 11, 20, 0, 0, 0),
       details: 'Bar surfing',
     })
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((resp) => {
       expect(resp.status).toBe(422);
 
@@ -90,6 +93,7 @@ test('/reports POST returns error for report with too long (>80) location', () =
       time: new Date(2017, 5, 11, 20, 0, 0, 0),
       details: 'Bar surfing',
     })
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((resp) => {
       expect(resp.status).toBe(422);
 
@@ -112,6 +116,7 @@ test('/reports POST returns error for report with no time', () => (
       location: 'Santana Row',
       details: 'Bar surfing',
     })
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((resp) => {
       expect(resp.status).toBe(422);
 
@@ -134,6 +139,7 @@ test('/reports POST returns error for report with not valid time', () => (
       time: 'Saturday!',
       details: 'Bar surfing',
     })
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((resp) => {
       expect(resp.status).toBe(422);
 
@@ -159,6 +165,7 @@ test('/reports POST returns error for report with too long (>255) description', 
         + 'related to roundness? Big asteroids are forming by gathering smaller '
         + 'asteroids (accretion). So asteroid is a big pile of rocks.',
     })
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((resp) => {
       expect(resp.status).toBe(422);
 
@@ -181,13 +188,14 @@ test('/reports PUT also has validation', () => (
       // Fetch first report in the list
       request.get(`${APP_URL}/reports/${resp.body[0]._id}`) // eslint-disable-line
     ))
-    .then(resp2 => (
+    .then(resp => (
       // Set update request with obviously invalid value
-      request.put(`${APP_URL}/reports/${resp2.body._id}`) // eslint-disable-line
+      request.put(`${APP_URL}/reports/${resp.body._id}`) // eslint-disable-line
         .set('Content-Type', 'application/json')
         .send({})
     ))
-    .catch((resp3) => {
-      expect(resp3.status).toBe(422);
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
+    .catch((resp) => {
+      expect(resp.status).toBe(422);
     })
 ));

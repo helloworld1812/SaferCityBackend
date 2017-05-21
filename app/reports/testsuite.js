@@ -105,6 +105,7 @@ test('/reports/:id GET returns report for existing id', () => (
 test('/reports/:id GET returns 404 error for non-existing id', () => (
   // code below returns promise
   request.get(`${APP_URL}/reports/-1`)
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((res) => {
       expect(res.status).toBe(404);
     })
@@ -134,6 +135,7 @@ test('/reports/:id PUT returns 404 error for non-existing id', () => (
   request.put(`${APP_URL}/reports/-1`)
     .set('Content-Type', 'application/json')
     .send(reports[0])
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((res) => {
       expect(res.status).toBe(404);
     })
@@ -156,6 +158,7 @@ test('/reports/:id DELETE removes the entity with existing id', () => (
 // ## But if we remove by non-existing id we get 404
 test('/reports/:id DELETE return 404 error for non-existing id', () => (
   request.delete(`${APP_URL}/reports/-1`)
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((res) => {
       expect(res.status).toBe(404);
     })
