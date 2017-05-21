@@ -1,4 +1,4 @@
-/* global describe, test, expect, beforeAll, afterAll, jest */
+/* global describe, test, expect, beforeAll, afterAll */
 const mongoose = require('mongoose');
 
 // # Setup
