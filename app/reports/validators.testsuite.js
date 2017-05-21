@@ -34,7 +34,7 @@ test('/reports POST returns error for report with no title', () => (
     })
 ));
 
-test('/reports POST returns error for report with too long title', () => (
+test('/reports POST returns error for report with too long (>80) title', () => (
   // code below returns promise
   request.post(`${APP_URL}/reports`)
     .set('Content-Type', 'application/json')
@@ -54,6 +54,7 @@ test('/reports POST returns error for report with too long title', () => (
       expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
 
       expect(getErrorsContainingText(fieldErrors, 'long')).toHaveLength(1);
+      expect(getErrorsContainingText(fieldErrors, '80')).toHaveLength(1);
     })
 ));
 
@@ -78,7 +79,7 @@ test('/reports POST returns error for report with no location', () => (
     })
 ));
 
-test('/reports POST returns error for report with too long location', () => (
+test('/reports POST returns error for report with too long (>80) location', () => (
   // code below returns promise
   request.post(`${APP_URL}/reports`)
     .set('Content-Type', 'application/json')
@@ -98,6 +99,7 @@ test('/reports POST returns error for report with too long location', () => (
       expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
 
       expect(getErrorsContainingText(fieldErrors, 'long')).toHaveLength(1);
+      expect(getErrorsContainingText(fieldErrors, '80')).toHaveLength(1);
     })
 ));
 
@@ -144,7 +146,7 @@ test('/reports POST returns error for report with not valid time', () => (
     })
 ));
 
-test('/reports POST returns error for report with too long description', () => (
+test('/reports POST returns error for report with too long (>255) description', () => (
   // code below returns promise
   request.post(`${APP_URL}/reports`)
     .set('Content-Type', 'application/json')
@@ -166,5 +168,6 @@ test('/reports POST returns error for report with too long description', () => (
       expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
 
       expect(getErrorsContainingText(fieldErrors, 'long')).toHaveLength(1);
+      expect(getErrorsContainingText(fieldErrors, '255')).toHaveLength(1);
     })
 ));
