@@ -3,7 +3,7 @@
  * Intended to be required from app.test.js.
  */
 
-/* global test, expect, beforeAll, afterAll, jest */
+/* global describe, test, expect */
 const request = require('superagent');
 
 const APP_URL = global.appUrl;
@@ -52,58 +52,9 @@ test('/reports POST returns id of newly created item', () => (
 ));
 
 // ## Make sure error is returned for invalid reports
-test('/reports POST returns error for report with no title', () => (
-  request.post(`${APP_URL}/reports`)
-    .set('Content-Type', 'application/json')
-    .send({
-      location: 'Santana Row',
-      time: new Date(2017, 5, 11, 20, 0, 0, 0),
-      details: 'Bar surfing',
-    })
-    .catch((resp) => {
-      expect(resp.status).toBe(422);
-    })
-));
-
-test('/reports POST returns error for report with no location', () => (
-  request.post(`${APP_URL}/reports`)
-    .set('Content-Type', 'application/json')
-    .send({
-      title: 'Ivan departure party',
-      time: new Date(2017, 5, 11, 20, 0, 0, 0),
-      details: 'Bar surfing',
-    })
-    .catch((resp) => {
-      expect(resp.status).toBe(422);
-    })
-));
-
-test('/reports POST returns error for report with no time', () => (
-  request.post(`${APP_URL}/reports`)
-    .set('Content-Type', 'application/json')
-    .send({
-      title: 'Ivan departure party',
-      location: 'Santana Row',
-      details: 'Bar surfing',
-    })
-    .catch((resp) => {
-      expect(resp.status).toBe(422);
-    })
-));
-
-test('/reports POST returns error for report with not valid time', () => (
-  request.post(`${APP_URL}/reports`)
-    .set('Content-Type', 'application/json')
-    .send({
-      title: 'Ivan departure party',
-      location: 'Santana Row',
-      time: 'Saturday!',
-      details: 'Bar surfing',
-    })
-    .catch((resp) => {
-      expect(resp.status).toBe(422);
-    })
-));
+describe('"Reports" validators', () => {
+  require('./validators.testsuite'); // eslint-disable-line global-require
+});
 
 // ## Make sure we added them and are able to read them
 test('/reports GET returns items', () => (
@@ -115,9 +66,10 @@ test('/reports GET returns items', () => (
       receivedReports.forEach((receivedReport) => {
         const report = reportById(receivedReport._id); // eslint-disable-line
         expect(report).toBeDefined();
+        // Check all properties
         expect(receivedReport.title).toEqual(report.title);
         expect(receivedReport.location).toEqual(report.location);
-        expect(new Date(receivedReport.time)).toEqual(report.time);
+        expect(receivedReport.time).toEqual(report.time.toISOString());
         expect(receivedReport.details).toEqual(report.details);
         expect(receivedReport.dangerous).toEqual(report.dangerous);
       });
