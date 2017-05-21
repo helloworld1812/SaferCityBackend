@@ -30,8 +30,7 @@ test('/reports POST returns error for report with no title', () => (
       const fieldErrors = getErrorsForField(errors, 'title');
       expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
 
-      const fieldErrorsWithText = getErrorsContainingText(fieldErrors, 'required');
-      expect(fieldErrorsWithText).toHaveLength(1);
+      expect(getErrorsContainingText(fieldErrors, 'required')).toHaveLength(1);
     })
 ));
 
@@ -54,8 +53,7 @@ test('/reports POST returns error for report with too long title', () => (
       const fieldErrors = getErrorsForField(errors, 'title');
       expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
 
-      const fieldErrorsWithText = getErrorsContainingText(fieldErrors, 'long');
-      expect(fieldErrorsWithText).toHaveLength(1);
+      expect(getErrorsContainingText(fieldErrors, 'long')).toHaveLength(1);
     })
 ));
 
@@ -76,8 +74,7 @@ test('/reports POST returns error for report with no location', () => (
       const fieldErrors = getErrorsForField(errors, 'location');
       expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
 
-      const fieldErrorsWithText = getErrorsContainingText(fieldErrors, 'required');
-      expect(fieldErrorsWithText).toHaveLength(1);
+      expect(getErrorsContainingText(fieldErrors, 'required')).toHaveLength(1);
     })
 ));
 
@@ -100,8 +97,7 @@ test('/reports POST returns error for report with too long location', () => (
       const fieldErrors = getErrorsForField(errors, 'location');
       expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
 
-      const fieldErrorsWithText = getErrorsContainingText(fieldErrors, 'long');
-      expect(fieldErrorsWithText).toHaveLength(1);
+      expect(getErrorsContainingText(fieldErrors, 'long')).toHaveLength(1);
     })
 ));
 
@@ -122,8 +118,7 @@ test('/reports POST returns error for report with no time', () => (
       const fieldErrors = getErrorsForField(errors, 'time');
       expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
 
-      const fieldErrorsWithText = getErrorsContainingText(fieldErrors, 'required');
-      expect(fieldErrorsWithText).toHaveLength(1);
+      expect(getErrorsContainingText(fieldErrors, 'required')).toHaveLength(1);
     })
 ));
 
@@ -145,8 +140,7 @@ test('/reports POST returns error for report with not valid time', () => (
       const fieldErrors = getErrorsForField(errors, 'time');
       expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
 
-      const fieldErrorsWithText = getErrorsContainingText(fieldErrors, 'valid');
-      expect(fieldErrorsWithText).toHaveLength(1);
+      expect(getErrorsContainingText(fieldErrors, 'valid')).toHaveLength(1);
     })
 ));
 
@@ -171,7 +165,6 @@ test('/reports POST returns error for report with too long description', () => (
       const fieldErrors = getErrorsForField(errors, 'details');
       expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
 
-      const fieldErrorsWithText = getErrorsContainingText(fieldErrors, 'long');
-      expect(fieldErrorsWithText).toHaveLength(1);
+      expect(getErrorsContainingText(fieldErrors, 'long')).toHaveLength(1);
     })
 ));
