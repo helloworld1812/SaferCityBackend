@@ -3,7 +3,7 @@
 Allows to store and retrieve data for "SaferCity" app.
 
 ## API
-[Specification on swagger](https://app.swaggerhub.com/apis/safercity/SaferCityBackend/1.0.0)
+[Specification on swagger](https://app.swaggerhub.com/apis/safercity/SaferCityBackend)
 
 ## Setup
 Checkout the code then run:
