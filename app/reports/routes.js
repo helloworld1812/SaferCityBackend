@@ -17,14 +17,14 @@ const getDateOrNow = (timestamp) => {
 
 router.post('/', validators.reportValidator, (req, res) => {
   const report = req.body;
-  service.create(report).then((createdReport) => {
-    res.json(createdReport.id);
-  });
+  service.create(report)
+    .then((createdReport) => { res.json(createdReport.id); });
 });
 
 router.get('/', validators.listReportsValidator, (req, res) => {
   const before = getDateOrNow(req.query.before);
-  service.list(before).then((reports) => { res.json(reports); });
+  service.list(before)
+    .then((reports) => { res.json(reports); });
 });
 
 router.get('/:id', (req, res) => {

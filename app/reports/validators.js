@@ -28,6 +28,6 @@ const listReportsValidator = (req, res, next) => {
       res.status(422).json(result.array());
     }
   });
-}
+};
 
 module.exports = { reportValidator, listReportsValidator };
