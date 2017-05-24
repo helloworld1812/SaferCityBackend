@@ -9,6 +9,8 @@ const commentSchema = mongoose.Schema({
 
 const Comment = mongoose.model('Comment', commentSchema);
 
+const LIST_LIMIT = 10;
+
 /**
  * Adds comment to storage
  * @returns newly created comment
@@ -16,7 +18,8 @@ const Comment = mongoose.model('Comment', commentSchema);
 const create = comment => (Comment.create(comment));
 
 /** Returns all entities in storage by provided criteria */
-const list = searchParams => (Comment.find(searchParams).sort('-time').exec());
+const list = (reportId, before) => (Comment.find(
+  { reportId, time: { $lt: before } }).sort('-time').limit(LIST_LIMIT).exec());
 
 
 /** Replaces comment by id with given new one */

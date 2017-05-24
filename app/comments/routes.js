@@ -7,22 +7,25 @@ const router = express.Router();
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
+/** Utility function that returns date for provided timestamp or now if it's undefined */
+const getDateOrNow = (timestamp) => {
+  if (timestamp) {
+    return new Date(parseInt(timestamp, 10));
+  }
+  return Date.now();
+};
+
 router.post('/', validators.commentValidator, (req, res) => {
   const comment = req.body;
-  service.create(comment).then((createdComment) => {
-    res.json(createdComment.id);
-  });
+  service.create(comment)
+    .then((createdComment) => { res.json(createdComment.id); });
 });
 
-router.get('/', (req, res) => {
+router.get('/', validators.listCommentsValidator, (req, res) => {
   const reportId = req.query.reportId;
-  if (!reportId) {
-    res.status(501).send('Fetching all comments is not supported');
-  } else {
-    service.list({reportId}).then((comments) => {
-      res.json(comments);
-    });
-  }
+  const before = getDateOrNow(req.query.before);
+  service.list(reportId, before)
+    .then((comments) => { res.json(comments); });
 });
 
 router.put('/:id', validators.commentValidator, (req, res) => {
