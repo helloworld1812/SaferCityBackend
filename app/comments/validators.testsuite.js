@@ -79,3 +79,35 @@ test('/comments PUT also has validation', () => (
       expect(resp.status).toBe(422);
     })
 ));
+
+test('/comments GET without reportId throws an error', () => (
+  // code below returns promise
+  request.get(`${APP_URL}/comments?&before=12`)
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
+    .catch((resp) => {
+      expect(resp.status).toBe(422);
+
+      const errors = JSON.parse(resp.response.text);
+
+      const fieldErrors = getErrorsForField(errors, 'reportId');
+      expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
+
+      expect(getErrorsContainingText(fieldErrors, 'required')).toHaveLength(1);
+    })
+));
+
+test('/comments GET with invalid date throws an error', () => (
+  // code below returns promise
+  request.get(`${APP_URL}/comments?reportId=1&before=1hello`)
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
+    .catch((resp) => {
+      expect(resp.status).toBe(422);
+
+      const errors = JSON.parse(resp.response.text);
+
+      const fieldErrors = getErrorsForField(errors, 'before');
+      expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
+
+      expect(getErrorsContainingText(fieldErrors, 'valid')).toHaveLength(1);
+    })
+));
