@@ -15,22 +15,22 @@ const id2 = mongoose.Types.ObjectId();
 const comments = [{
   reportId: id1,
   text: 'Hello World',
-  time: new Date(2017, 5, 11, 20, 0, 0, 0),  // make sure times are not sorted
+  time: new Date(2017, 2, 11, 20, 0, 0, 0),  // make sure times are not sorted
   user: 'Alex',
 }, {
   reportId: id1,
   text: 'The other comment',
-  time: new Date(2017, 3, 15, 11, 15, 0, 0),  // make sure times are not sorted
+  time: new Date(2017, 1, 15, 11, 15, 0, 0),  // make sure times are not sorted
   user: 'Sonya',
 }, {
   reportId: id1,
   text: 'The test',
-  time: new Date(2017, 7, 15, 11, 15, 0, 0), // make sure times are not sorted
+  time: new Date(2017, 0, 15, 11, 15, 0, 0), // make sure times are not sorted
   user: 'Greg',
 }, {
   reportId: id2,
   text: 'Welcome',
-  time: new Date(2017, 8, 15, 11, 15, 0, 0), // make sure times are not sorted
+  time: new Date(2017, 4, 15, 11, 15, 0, 0), // make sure times are not sorted
   user: 'Alex',
 }];
 
@@ -38,6 +38,8 @@ const comments = [{
 const id = index => comments[index].id;
 /** Utility function to return reportId of index-th item */
 const reportId = index => comments[index].reportId;
+/** Utility function to return  time of index-th item */
+const time = index => comments[index].time;
 /** Utility function to return single item with same id */
 const commentById = itemId => comments.filter(c => String(c.id) === itemId)[0];
 /** Utility function to return items with same reportId */
@@ -91,9 +93,22 @@ test('/comments GET returns items sorted by time DESC', () => (
       const receivedComments = resp.body;
       let lastTime = Infinity;
       receivedComments.forEach((receivedComment) => {
-        const time = (new Date(receivedComment.time)).getTime();
-        expect(time).toBeLessThan(lastTime);
-        lastTime = time;
+        const commentTime = (new Date(receivedComment.time)).getTime();
+        expect(commentTime).toBeLessThan(lastTime);
+        lastTime = commentTime;
+      });
+    })
+));
+
+// ## Make sure before param works as expected
+test('/comments GET returns items before specified time', () => (
+  // code below returns promise
+  request.get(`${APP_URL}/comments?reportId=${reportId(0)}&before=${time(0).getTime()}`)
+    .then((resp) => {
+      const receivedComments = resp.body;
+      receivedComments.forEach((receivedComment) => {
+        const commentTime = (new Date(receivedComment.time)).getTime();
+        expect(commentTime).toBeLessThan(time(0).getTime());
       });
     })
 ));
