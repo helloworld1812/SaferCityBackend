@@ -40,3 +40,7 @@ describe('"Reports" entity', () => {
 describe('"Comments" entity', () => {
   require('./comments/testsuite'); // eslint-disable-line global-require
 });
+
+describe('"Users" entity', () => {
+  require('./users/testsuite'); // eslint-disable-line global-require
+});
