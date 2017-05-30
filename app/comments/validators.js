@@ -3,6 +3,7 @@ const REQUIRED_VALIDATION_ERROR_MESSAGE = 'Field is required but no value is pro
 const commentValidator = (req, res, next) => {
   req.checkBody('text', REQUIRED_VALIDATION_ERROR_MESSAGE).notEmpty();
   req.checkBody('text', 'Must be less than 255 chars long').len(0, 255);
+  req.checkBody('userId', REQUIRED_VALIDATION_ERROR_MESSAGE).notEmpty();
 
   req.getValidationResult().then((result) => {
     if (result.isEmpty()) {

@@ -6,6 +6,7 @@ const reportSchema = mongoose.Schema({
   time: Date,
   details: String,
   dangerous: Boolean,
+  userId: mongoose.Schema.Types.ObjectId,
 });
 
 const Report = mongoose.model('Report', reportSchema);

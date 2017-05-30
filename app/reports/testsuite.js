@@ -5,6 +5,7 @@
 
 /* global describe, test, expect */
 const request = require('superagent');
+const mongoose = require('mongoose');
 
 const APP_URL = global.appUrl;
 
@@ -15,17 +16,20 @@ const reports = [{
   location: 'Santana Row',
   time: new Date(2017, 2, 11, 20, 0, 0, 0),  // make sure times are not sorted
   details: 'Bar surfing',
+  userId: mongoose.Types.ObjectId(),
 }, {
   title: 'Car accident',
   location: '101',
   time: new Date(2017, 0, 15, 11, 15, 0, 0),  // make sure times are not sorted
   details: 'Two cars',
   dangerous: true,
+  userId: mongoose.Types.ObjectId(),
 }, {
   title: 'Festival happening',
   location: 'Shoreline Amphiteatre',
   time: new Date(2017, 4, 15, 11, 15, 0, 0), // make sure times are not sorted
   details: 'Muse should be there',
+  userId: mongoose.Types.ObjectId(),
 }];
 
 /** Utility function to return id of index-th item */

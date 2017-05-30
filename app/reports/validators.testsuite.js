@@ -5,6 +5,7 @@
 
 /* global test, expect */
 const request = require('superagent');
+const mongoose = require('mongoose');
 
 const APP_URL = global.appUrl;
 
@@ -21,6 +22,7 @@ test('/reports POST returns error for report with no title', () => (
       location: 'Santana Row',
       time: new Date(2017, 5, 11, 20, 0, 0, 0),
       details: 'Bar surfing',
+      userId: mongoose.Types.ObjectId(),
     })
     .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((resp) => {
@@ -45,6 +47,7 @@ test('/reports POST returns error for report with too long (>80) title', () => (
       location: 'Santana Row',
       time: new Date(2017, 5, 11, 20, 0, 0, 0),
       details: 'Bar surfing',
+      userId: mongoose.Types.ObjectId(),
     })
     .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((resp) => {
@@ -68,6 +71,7 @@ test('/reports POST returns error for report with no location', () => (
       title: 'Ivan departure party',
       time: new Date(2017, 5, 11, 20, 0, 0, 0),
       details: 'Bar surfing',
+      userId: mongoose.Types.ObjectId(),
     })
     .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((resp) => {
@@ -92,6 +96,7 @@ test('/reports POST returns error for report with too long (>80) location', () =
       + 'jovial gravity prevent them from forming a full-fledged planet.',
       time: new Date(2017, 5, 11, 20, 0, 0, 0),
       details: 'Bar surfing',
+      userId: mongoose.Types.ObjectId(),
     })
     .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((resp) => {
@@ -115,6 +120,7 @@ test('/reports POST returns error for report with no time', () => (
       title: 'Ivan departure party',
       location: 'Santana Row',
       details: 'Bar surfing',
+      userId: mongoose.Types.ObjectId(),
     })
     .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((resp) => {
@@ -138,6 +144,7 @@ test('/reports POST returns error for report with not valid time', () => (
       location: 'Santana Row',
       time: 'Saturday!',
       details: 'Bar surfing',
+      userId: mongoose.Types.ObjectId(),
     })
     .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((resp) => {
@@ -149,6 +156,29 @@ test('/reports POST returns error for report with not valid time', () => (
       expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
 
       expect(getErrorsContainingText(fieldErrors, 'valid')).toHaveLength(1);
+    })
+));
+
+test('/reports POST returns error for report with no userId', () => (
+  // code below returns promise
+  request.post(`${APP_URL}/reports`)
+    .set('Content-Type', 'application/json')
+    .send({
+      title: 'Ivan departure party',
+      location: 'Santana Row',
+      time: new Date(2017, 5, 11, 20, 0, 0, 0),
+      details: 'Bar surfing',
+    })
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
+    .catch((resp) => {
+      expect(resp.status).toBe(422);
+
+      const errors = JSON.parse(resp.response.text);
+
+      const fieldErrors = getErrorsForField(errors, 'userId');
+      expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
+
+      expect(getErrorsContainingText(fieldErrors, 'required')).toHaveLength(1);
     })
 ));
 
@@ -164,6 +194,7 @@ test('/reports POST returns error for report with too long (>255) description', 
         + 'it has strong enough gravity to round the dwarf planet. How does gravity '
         + 'related to roundness? Big asteroids are forming by gathering smaller '
         + 'asteroids (accretion). So asteroid is a big pile of rocks.',
+      userId: mongoose.Types.ObjectId(),
     })
     .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((resp) => {

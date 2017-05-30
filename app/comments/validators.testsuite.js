@@ -5,6 +5,7 @@
 
 /* global test, expect */
 const request = require('superagent');
+const mongoose = require('mongoose');
 
 const APP_URL = global.appUrl;
 
@@ -19,6 +20,7 @@ test('/comments POST returns error for comment with no text', () => (
     .set('Content-Type', 'application/json')
     .send({
       time: new Date(2017, 5, 11, 20, 0, 0, 0),
+      userId: mongoose.Types.ObjectId(),
     })
     .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((resp) => {
@@ -43,6 +45,7 @@ test('/comments POST returns error for comment with too long (>255) text', () =>
         + 'a fourth of a beer. The bartender stops them, pours two beers, and '
         + 'replies "You should know your limits." (taken from reddit)',
       time: new Date(2017, 5, 11, 20, 0, 0, 0),
+      userId: mongoose.Types.ObjectId(),
     })
     .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
     .catch((resp) => {
@@ -55,6 +58,27 @@ test('/comments POST returns error for comment with too long (>255) text', () =>
 
       expect(getErrorsContainingText(fieldErrors, 'long')).toHaveLength(1);
       expect(getErrorsContainingText(fieldErrors, '255')).toHaveLength(1);
+    })
+));
+
+test('/comments POST returns error for comment with no userId', () => (
+  // code below returns promise
+  request.post(`${APP_URL}/comments`)
+    .set('Content-Type', 'application/json')
+    .send({
+      text: 'Nice comment',
+      time: new Date(2017, 5, 11, 20, 0, 0, 0),
+    })
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
+    .catch((resp) => {
+      expect(resp.status).toBe(422);
+
+      const errors = JSON.parse(resp.response.text);
+
+      const fieldErrors = getErrorsForField(errors, 'userId');
+      expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
+
+      expect(getErrorsContainingText(fieldErrors, 'required')).toHaveLength(1);
     })
 ));
 
