@@ -30,7 +30,7 @@ router.get('/', validators.listReportsValidator, (req, res) => {
 router.get('/:id', (req, res) => {
   const id = req.params.id;
   service.find(id)
-    .then((report) => { res.json(report); })
+    .then(report => ((report) ? res.json(report) : Promise.reject()))
     .catch(() => { res.status(404).send(`No report with id "${id}" exists`); });
 });
 
