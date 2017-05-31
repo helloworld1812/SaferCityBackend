@@ -21,6 +21,46 @@ const getErrorsForField = (errors, field) => errors.filter(e => e.param === fiel
 /** Utility function that returns errors which messages contain specified text. */
 const getErrorsContainingText = (errors, text) => errors.filter(e => e.msg.includes(text));
 
+test('/comments POST returns error for comment with no reportId', () => (
+  // code below returns promise
+  request.post(`${APP_URL}/comments`)
+    .set('Content-Type', 'application/json')
+    .send(Object.assign({}, validComment, {
+      reportId: undefined,
+    }))
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
+    .catch((resp) => {
+      expect(resp.status).toBe(422);
+
+      const errors = JSON.parse(resp.response.text);
+
+      const fieldErrors = getErrorsForField(errors, 'reportId');
+      expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
+
+      expect(getErrorsContainingText(fieldErrors, 'required')).toHaveLength(1);
+    })
+));
+
+test('/comments POST returns error for comment with invalid reportId', () => (
+  // code below returns promise
+  request.post(`${APP_URL}/comments`)
+    .set('Content-Type', 'application/json')
+    .send(Object.assign({}, validComment, {
+      reportId: -1,
+    }))
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
+    .catch((resp) => {
+      expect(resp.status).toBe(422);
+
+      const errors = JSON.parse(resp.response.text);
+
+      const fieldErrors = getErrorsForField(errors, 'reportId');
+      expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
+
+      expect(getErrorsContainingText(fieldErrors, 'ObjectId')).toHaveLength(1);
+    })
+));
+
 test('/comments POST returns error for comment with no text', () => (
   // code below returns promise
   request.post(`${APP_URL}/comments`)
