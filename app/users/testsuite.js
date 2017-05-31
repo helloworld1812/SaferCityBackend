@@ -99,7 +99,6 @@ test('/users/:id DELETE removes the entity with existing id', () => (
       // Verify this user exists
       expect(receivedUser.name).toBeDefined();
       // Remove this user
-      console.log(receivedUser);
       return request.delete(`${APP_URL}/users/${id(1)}`);
     })
     .then(() => (
