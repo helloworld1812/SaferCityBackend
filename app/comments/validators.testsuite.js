@@ -82,6 +82,28 @@ test('/comments POST returns error for comment with no userId', () => (
     })
 ));
 
+test('/comments POST returns error for comment with invalid userId', () => (
+  // code below returns promise
+  request.post(`${APP_URL}/comments`)
+    .set('Content-Type', 'application/json')
+    .send({
+      text: 'Nice comment',
+      time: new Date(2017, 5, 11, 20, 0, 0, 0),
+      userId: -1,
+    })
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
+    .catch((resp) => {
+      expect(resp.status).toBe(422);
+
+      const errors = JSON.parse(resp.response.text);
+
+      const fieldErrors = getErrorsForField(errors, 'userId');
+      expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
+
+      expect(getErrorsContainingText(fieldErrors, 'ObjectId')).toHaveLength(1);
+    })
+));
+
 // Same validator is used to validate PUT requests.
 test('/comments PUT also has validation', () => (
   // code below returns promise

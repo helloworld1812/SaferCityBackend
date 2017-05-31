@@ -9,6 +9,7 @@ const reportValidator = (req, res, next) => {
   req.checkBody('time', 'Provided time is not a valid time').isDate();
   req.checkBody('details', 'Must be less than 255 chars long').len(0, 255);
   req.checkBody('userId', REQUIRED_VALIDATION_ERROR_MESSAGE).notEmpty();
+  req.checkBody('userId', 'Must be valid ObjectId').isMongoId();
 
   req.getValidationResult().then((result) => {
     if (result.isEmpty()) {

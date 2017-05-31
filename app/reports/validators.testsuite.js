@@ -182,6 +182,30 @@ test('/reports POST returns error for report with no userId', () => (
     })
 ));
 
+test('/reports POST returns error for report with invalid userId', () => (
+  // code below returns promise
+  request.post(`${APP_URL}/reports`)
+    .set('Content-Type', 'application/json')
+    .send({
+      title: 'Ivan departure party',
+      location: 'Santana Row',
+      time: new Date(2017, 5, 11, 20, 0, 0, 0),
+      details: 'Bar surfing',
+      userId: -1,
+    })
+    .then(resp => (Promise.reject(resp))) // Request shouldn't be successful - reject it
+    .catch((resp) => {
+      expect(resp.status).toBe(422);
+
+      const errors = JSON.parse(resp.response.text);
+
+      const fieldErrors = getErrorsForField(errors, 'userId');
+      expect(fieldErrors.length).toBeGreaterThan(0); // At least 1 error message
+
+      expect(getErrorsContainingText(fieldErrors, 'ObjectId')).toHaveLength(1);
+    })
+));
+
 test('/reports POST returns error for report with too long (>255) description', () => (
   // code below returns promise
   request.post(`${APP_URL}/reports`)
