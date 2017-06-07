@@ -16,7 +16,7 @@ app.use('/comments', commentsRoutes);
 app.use('/users', usersRoutes);
 
 const serverPromise = Promise.all([mongo.connect()])
-  .then(() => (Promise.resolve(app.listen(8080))))
+  .then(() => (Promise.resolve(app.listen(process.env.PORT))))
   .then((server) => {
     console.log('SaferCity backend started');
     return server;

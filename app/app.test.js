@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 // Load and run the app
 const serverPromise = require('./app');
 
-global.appUrl = 'http://127.0.0.1:8080';
+global.appUrl = `http://127.0.0.1:${process.env.PORT}`;
 
 let runningApp = null;
 
@@ -26,6 +26,7 @@ describe('Configuration', () => {
     expect(process.env.DB_PASS).toBeDefined();
     expect(process.env.DB_HOST).toBeDefined();
     expect(process.env.DB_NAME).toBeDefined();
+    expect(process.env.PORT).toBeDefined();
   });
 });
 
