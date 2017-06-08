@@ -39,6 +39,11 @@ test('/reports POST returns id of newly created item', () => (
   )))
 ));
 
+// ## Make sure error is returned for invalid reports
+describe('"Users" validators', () => {
+  require('./validators.testsuite'); // eslint-disable-line global-require
+});
+
 // ## Check if we can grab object by id
 test('/users/:id GET returns user for existing id', () => (
   // code below returns promise
