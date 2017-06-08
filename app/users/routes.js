@@ -28,11 +28,4 @@ router.put('/:id', validators.userValidator, (req, res) => {
     .catch(() => { res.status(404).send(`No user with id "${id}" exists`); });
 });
 
-router.delete('/:id', (req, res) => {
-  const id = req.params.id;
-  service.remove(id)
-    .then(() => { res.send(); })
-    .catch(() => { res.status(404).send(`No user with id "${id}" exists`); });
-});
-
 module.exports = router;
