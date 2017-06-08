@@ -16,22 +16,22 @@ const comments = [{
   reportId: id1,
   text: 'Hello World',
   time: new Date(2017, 2, 11, 20, 0, 0, 0),  // make sure times are not sorted
-  user: 'Alex',
+  userId: mongoose.Types.ObjectId(),
 }, {
   reportId: id1,
   text: 'The other comment',
   time: new Date(2017, 1, 15, 11, 15, 0, 0),  // make sure times are not sorted
-  user: 'Sonya',
+  userId: mongoose.Types.ObjectId(),
 }, {
   reportId: id1,
   text: 'The test',
   time: new Date(2017, 0, 15, 11, 15, 0, 0), // make sure times are not sorted
-  user: 'Greg',
+  userId: mongoose.Types.ObjectId(),
 }, {
   reportId: id2,
   text: 'Welcome',
   time: new Date(2017, 4, 15, 11, 15, 0, 0), // make sure times are not sorted
-  user: 'Alex',
+  userId: mongoose.Types.ObjectId(),
 }];
 
 /** Utility function to return id of index-th item */
@@ -80,7 +80,7 @@ test('/comments?reportId=:reportId GET returns items', () => (
         expect(comment).toBeDefined();
         expect(receivedComment.reportId).toEqual(String(comment.reportId));
         expect(new Date(receivedComment.time)).toEqual(comment.time);
-        expect(receivedComment.user).toEqual(comment.user);
+        expect(receivedComment.userId).toEqual(String(comment.userId));
       });
     })
 ));

@@ -4,7 +4,7 @@ const commentSchema = mongoose.Schema({
   reportId: mongoose.Schema.Types.ObjectId,
   text: String,
   time: Date,
-  user: String,
+  userId: mongoose.Schema.Types.ObjectId,
 });
 
 const Comment = mongoose.model('Comment', commentSchema);
